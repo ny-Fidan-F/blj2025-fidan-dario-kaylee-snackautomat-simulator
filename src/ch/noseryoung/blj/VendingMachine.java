@@ -97,4 +97,12 @@ public class VendingMachine {
             System.out.println("Produkt nicht gefunden.");
         }
     }
+
+    public List<Product> getProducts() {
+        return this.products;
+    }
+
+    public double getInsertedMoney() {
+        return this.insertedMoney;
+    }
 }
