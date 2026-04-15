@@ -87,4 +87,14 @@ public class VendingMachine {
             p.setStock(newStock);
         }
     }
+
+    public void changePrice(String code, double newPrice) {
+        Product p = findProduct(code);
+
+        if (p != null) {
+            p.setPrice(newPrice);
+        } else {
+            System.out.println("Produkt nicht gefunden.");
+        }
+    }
 }
