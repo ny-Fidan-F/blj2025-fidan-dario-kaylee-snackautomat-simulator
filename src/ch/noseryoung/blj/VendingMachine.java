@@ -72,14 +72,33 @@ public class VendingMachine {
         return null;
     }
 
-    public void replaceProduct(String code, String newName, double newPrice, int newStock) {
-       Product p = findProduct(code);
+    public boolean replaceProduct(String code, String newName, double newPrice, int newStock) {
+        if (code == null || code.trim().isEmpty()) {
+            return false;
+        }
+
+        if (newName == null || newName.trim().isEmpty()) {
+            return false;
+        }
+
+        if (newPrice <= 0) {
+            return false;
+        }
+
+        if (newStock < 0) {
+            return false;
+        }
+
+        Product p = findProduct(code);
 
         if (p != null) {
             p.setName(newName);
             p.setPrice(newPrice);
             p.setStock(newStock);
+            return true;
         }
+
+        return false;
     }
 
     public String getSecretKey() {
