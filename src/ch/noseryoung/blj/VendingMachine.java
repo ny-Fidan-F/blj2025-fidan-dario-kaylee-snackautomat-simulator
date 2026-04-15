@@ -79,9 +79,19 @@ public class VendingMachine {
     }
 
     public void refill(String code, int quantity) {
+        if (code == null || code.trim().isEmpty()) {
+            throw new IllegalArgumentException("Fehler: Ungültiger Produkt-Code.");
+        }
+
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Fehler: Menge muss grösser als 0 sein.");
+        }
         Product p = findProduct(code);
         if (p != null) {
             p.setStock(p.getStock() + quantity);
+            System.out.println("Bestand für " + code + " um " + quantity + " erhöht.");
+        } else {
+            throw new RuntimeException("Fehler: Produkt mit Code " + code + " nicht gefunden.");
         }
     }
 
@@ -119,6 +129,9 @@ public class VendingMachine {
     }
 
     public void setSecretKey(String secretKey) {
+        if (secretKey == null || secretKey.trim().length() < 4) {
+            throw new IllegalArgumentException("Secret Key muss mindestens 4 Zeichen lang sein.");
+        }
         this.secretKey = secretKey;
     }
 
