@@ -18,6 +18,11 @@ public class VendingMachine {
         this.initalFillDone = false;
         this.products = new ArrayList<>();
 
-        System.out.println("VendingMachine bereit.");
+    }
+
+    public void insertMoney(double amount) {
+        if (amount > 0) {
+            this.insertedMoney += amount;
+        }
     }
 }
