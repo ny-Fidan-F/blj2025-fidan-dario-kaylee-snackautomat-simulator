@@ -11,26 +11,22 @@ public class VendingMachine {
     private List<Product> products;
 
     public VendingMachine() {
-
         this.secretKey = "RandomPassword";
-
         this.insertedMoney = 0.0;
         this.initialFillDone = false;
         this.products = new ArrayList<>();
-
     }
 
     public void insertMoney(double amount) {
-        if (amount > 0) {
-            this.insertedMoney += amount;
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Der eingeworfene Betrag muss grösser als 0 sein.");
         }
+        this.insertedMoney += amount;
     }
 
     public boolean selectProduct(String code) {
-
         for (Product p : products) {
             if (p.getCode().equals(code)) {
-
                 if (this.insertedMoney >= p.getPrice() && p.getStock() > 0) {
                     this.insertedMoney -= p.getPrice();
                     p.setStock(p.getStock() - 1);
@@ -78,7 +74,7 @@ public class VendingMachine {
         return null;
     }
 
-    public void refill(String code, int quantity) {
+    public boolean refill(String code, int quantity) {
         if (code == null || code.trim().isEmpty()) {
             throw new IllegalArgumentException("Fehler: Ungültiger Produkt-Code.");
         }
@@ -90,37 +86,37 @@ public class VendingMachine {
         if (p != null) {
             p.setStock(p.getStock() + quantity);
             System.out.println("Bestand für " + code + " um " + quantity + " erhöht.");
-        } else {
-            throw new RuntimeException("Fehler: Produkt mit Code " + code + " nicht gefunden.");
+            return true;
         }
+        return false;
     }
 
     public boolean replaceProduct(String code, String newName, double newPrice, int newStock) {
-        if (code == null || code.trim().isEmpty()) {
-            return false;
-        }
-
-        if (newName == null || newName.trim().isEmpty()) {
-            return false;
-        }
-
-        if (newPrice <= 0) {
-            return false;
-        }
-
-        if (newStock < 0) {
-            return false;
-        }
+        if (code == null || code.trim().isEmpty()) throw new IllegalArgumentException("Code ungültig");
+        if (newName == null || newName.trim().isEmpty()) throw new IllegalArgumentException("Name ungültig");
+        if (newPrice <= 0) throw new IllegalArgumentException("Preis muss > 0 sein");
+        if (newStock < 0) throw new IllegalArgumentException("Stock darf nicht negativ sein");
 
         Product p = findProduct(code);
-
         if (p != null) {
             p.setName(newName);
             p.setPrice(newPrice);
             p.setStock(newStock);
             return true;
         }
+        return false;
+    }
 
+    public boolean changePrice(String code, double newPrice) {
+        if (newPrice <= 0) {
+            throw new IllegalArgumentException("Preis muss grösser als 0 sein.");
+        }
+
+        Product p = findProduct(code);
+        if (p != null) {
+            p.setPrice(newPrice);
+            return true;
+        }
         return false;
     }
 
