@@ -7,7 +7,7 @@ public class VendingMachine {
 
     private String secretKey;
     private double insertedMoney;
-    private boolean initalFillDone;
+    private boolean initialFillDone;
     private List<Product> products;
 
     public VendingMachine() {
@@ -15,7 +15,7 @@ public class VendingMachine {
         this.secretKey = "RandomPassword";
 
         this.insertedMoney = 0.0;
-        this.initalFillDone = false;
+        this.initialFillDone = false;
         this.products = new ArrayList<>();
 
     }
@@ -41,6 +41,25 @@ public class VendingMachine {
             }
         }
         return false;
+    }
+
+    public double cancelProduct() {
+        double moneyToReturn = this.insertedMoney;
+        this.insertedMoney = 0.0;
+        return moneyToReturn;
+    }
+
+    public void initialFill() {
+        if (!this.initialFillDone) {
+            products.add(new Product("A1", "Cola", 2.50, 10));
+            products.add(new Product("A2", "Chips", 1.80, 7));
+            products.add(new Product("A3", "Mars-Riegel", 1.50, 8));
+
+            this.initialFillDone = true;
+            System.out.println("Automat wurde gefüllt.");
+        } else {
+            System.out.println("Initialisierung schon durchgeführt.");
+        }
     }
 
     private Product findProduct(String code) {
