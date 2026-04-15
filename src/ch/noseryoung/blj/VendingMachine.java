@@ -26,6 +26,23 @@ public class VendingMachine {
         }
     }
 
+    public boolean selectProduct(String code) {
+
+        for (Product p : products) {
+            if (p.getCode().equals(code)) {
+
+                if (this.insertedMoney >= p.getPrice() && p.getStock() > 0) {
+                    this.insertedMoney -= p.getPrice() * (p.getStock() - 1);
+
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
     private Product findProduct(String code) {
         for (Product p : products) {
             if (p.getCode().equals(code)) {
