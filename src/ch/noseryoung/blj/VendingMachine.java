@@ -32,7 +32,8 @@ public class VendingMachine {
             if (p.getCode().equals(code)) {
 
                 if (this.insertedMoney >= p.getPrice() && p.getStock() > 0) {
-                    this.insertedMoney -= p.getPrice() * (p.getStock() - 1);
+                    this.insertedMoney -= p.getPrice();
+                    p.setStock(p.getStock() - 1);
 
                     return true;
                 } else {
