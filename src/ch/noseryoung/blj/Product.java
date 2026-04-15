@@ -1,7 +1,7 @@
 package ch.noseryoung.blj;
 
 public class Product {
-    private String code;
+    private final String code;
     private String name;
     private double price;
     private int stock;
