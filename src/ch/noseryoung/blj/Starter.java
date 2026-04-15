@@ -2,8 +2,8 @@ package ch.noseryoung.blj;
 
 
 public class Starter {
-    static void main() {
-            Simulation simulation = new Simulation();
-            simulation.run();
+    public static void main(String[] args) {
+        Simulation simulation = new Simulation();
+        simulation.run();
     }
 }
