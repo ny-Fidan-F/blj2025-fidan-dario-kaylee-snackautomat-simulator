@@ -25,4 +25,13 @@ public class VendingMachine {
             this.insertedMoney += amount;
         }
     }
+
+    private Product findProduct(String code) {
+        for (Product p : products) {
+            if (p.getCode().equals(code)) {
+                return p;
+            }
+        }
+        return null;
+    }
 }
