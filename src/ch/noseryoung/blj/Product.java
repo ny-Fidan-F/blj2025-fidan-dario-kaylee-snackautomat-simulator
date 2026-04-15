@@ -7,10 +7,14 @@ public class Product {
     private int stock;
 
     public Product(String code, String name, double price, int stock) {
+        if (code == null || code.trim().isEmpty()) {
+            throw new IllegalArgumentException("Code must not be empty.");
+        }
+
         this.code = code;
-        this.name = name;
-        this.price = price;
-        this.stock = stock;
+        setName(name);
+        setPrice(price);
+        setStock(stock);
     }
 
     public String getCode() {
@@ -22,6 +26,10 @@ public class Product {
     }
 
     public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name must not be empty.");
+        }
+
         this.name = name;
     }
 
@@ -30,6 +38,10 @@ public class Product {
     }
 
     public void setPrice(double price) {
+        if (price <= 0) {
+            throw new IllegalArgumentException("Price must be greater than 0.");
+        }
+
         this.price = price;
     }
 
@@ -38,6 +50,10 @@ public class Product {
     }
 
     public void setStock(int stock) {
+        if (stock < 0) {
+            throw new IllegalArgumentException("Stock must not be negative.");
+        }
+
         this.stock = stock;
     }
 }
