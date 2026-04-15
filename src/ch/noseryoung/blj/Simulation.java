@@ -7,12 +7,17 @@ public class Simulation {
     private VendingMachine machine;
     private Scanner scanner;
 
+    public Simulation() {
+        this.scanner = new Scanner(System.in);
+        this.machine = new VendingMachine();
+    }
+
     public void run() {
         System.out.println("hi welcome to the Snack Machine!");
 
         while (true) {
             System.out.println("\nenter a product code, the secret key, or type exit:");
-            String input = scanner.nextLine().trim();
+            String input = scanner.nextLine();
 
             if (input.equals("exit")) {
                 System.out.println("byebye");
