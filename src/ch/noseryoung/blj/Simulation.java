@@ -57,7 +57,7 @@ public class Simulation {
 
             if (input.equals("cancel")) {
                 if (inserted > 0) {
-                    System.out.println("returning" + inserted);
+                    System.out.println("returning " + inserted);
                 }
                 System.out.println("purchase cancelled.");
                 return;
