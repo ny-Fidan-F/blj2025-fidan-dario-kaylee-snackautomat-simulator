@@ -26,7 +26,7 @@ public class VendingMachine {
 
     public boolean selectProduct(String code) {
         for (Product p : products) {
-            if (p.getCode().equals(code)) {
+            if (p.getCode().equalsIgnoreCase(code)) {
                 if (this.insertedMoney >= p.getPrice() && p.getStock() > 0) {
                     this.insertedMoney -= p.getPrice();
                     p.setStock(p.getStock() - 1);
@@ -67,7 +67,7 @@ public class VendingMachine {
 
     public Product findProduct(String code) {
         for (Product p : products) {
-            if (p.getCode().equals(code)) {
+            if (p.getCode().equalsIgnoreCase(code)) {
                 return p;
             }
         }

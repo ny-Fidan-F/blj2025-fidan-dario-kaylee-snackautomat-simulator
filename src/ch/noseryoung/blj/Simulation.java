@@ -17,13 +17,13 @@ public class Simulation {
 
         while (true) {
             System.out.println("\nenter a product code, the secret key, or type exit:");
-            String input = scanner.nextLine();
+            String input = scanner.nextLine().toLowerCase();
 
             if (input.equals("exit")) {
                 System.out.println("byebye");
                 break;
 
-            } else if (input.equals(machine.getSecretKey())) {
+            } else if (input.equals(machine.getSecretKey().toLowerCase())) {
                 handleMaintenance();
 
             } else {
@@ -33,7 +33,6 @@ public class Simulation {
     }
 
     private void handlePurchase(String code) {
-        // ask the machine to find the product by code
         Product product = machine.findProduct(code);
 
         if (product == null) {
@@ -54,7 +53,7 @@ public class Simulation {
         double inserted = 0.0;
 
         while (true) {
-            String input = scanner.nextLine().trim();
+            String input = scanner.nextLine().trim().toLowerCase();
 
             if (input.equals("cancel")) {
                 if (inserted > 0) {
@@ -96,7 +95,7 @@ public class Simulation {
         System.out.println("4 - Change a price");
         System.out.println("5 - Exit maintenance");
 
-        String choice = scanner.nextLine().trim();
+        String choice = scanner.nextLine().trim().toLowerCase();
 
         switch (choice) {
             case "1":
@@ -112,10 +111,14 @@ public class Simulation {
                     break;
                 }
                 System.out.println("how many to add?");
-                int amount = Integer.parseInt(scanner.nextLine().trim());
-                // add to existing stock using setStock()
-                toRestock.setStock(toRestock.getStock() + amount);
-                System.out.println("restocked! new stock: " + toRestock.getStock());
+                int amount = Integer.parseInt(scanner.nextLine());
+                int newStock = toRestock.getStock() + amount;
+                if (newStock > 30) {
+                    System.out.println("cannot restock over 30 items. maximum allowed: " + (30 - toRestock.getStock()));
+                    break;
+                }
+                toRestock.setStock(newStock);
+
                 break;
 
             case "3":
