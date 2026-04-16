@@ -19,7 +19,7 @@ public class VendingMachine {
 
     public void insertMoney(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("Der eingeworfene Betrag muss grösser als 0 sein.");
+            throw new IllegalArgumentException("The amount entered must be greater than 0.");
         }
         this.insertedMoney += amount;
     }
@@ -49,19 +49,19 @@ public class VendingMachine {
     public void initialFill() {
         if (!this.initialFillDone) {
             products.add(new Product("A1", "Cola", 2.50, 10));
-            products.add(new Product("A2", "Eistee", 2.30, 10));
-            products.add(new Product("A3", "Wasser", 1.50, 15));
-            products.add(new Product("B1", "Snickers", 1.80, 12));
-            products.add(new Product("B2", "Twix", 1.80, 12));
-            products.add(new Product("B3", "Gummibärchen", 2.10, 8));
-            products.add(new Product("C1", "Chips", 2.00, 7));
-            products.add(new Product("C2", "Salzstangen", 1.70, 10));
-            products.add(new Product("C3", "Apfelschnitze", 2.40, 5));
+            products.add(new Product("A2", "Iced Tea", 2.30, 10));
+            products.add(new Product("A3", "Water", 1.50, 15));
+            products.add(new Product("B1", "Chocolate Bar (Snickers)", 1.80, 12));
+            products.add(new Product("B2", "Chocolate Bar (Twix)", 1.80, 12));
+            products.add(new Product("B3", "Gummy Bears", 2.10, 8));
+            products.add(new Product("C1", "Potato Chips", 2.00, 7));
+            products.add(new Product("C2", "Pretzel Sticks", 1.70, 10));
+            products.add(new Product("C3", "Apple Slices", 2.40, 5));
 
             this.initialFillDone = true;
-            System.out.println("Automat wurde gefüllt.");
+            System.out.println("The vending machine has been restocked.");
         } else {
-            System.out.println("Initialisierung schon durchgeführt.");
+            System.out.println("Initialization has already been performed.");
         }
     }
 
@@ -76,26 +76,26 @@ public class VendingMachine {
 
     public boolean refill(String code, int quantity) {
         if (code == null || code.trim().isEmpty()) {
-            throw new IllegalArgumentException("Fehler: Ungültiger Produkt-Code.");
+            throw new IllegalArgumentException("Error: Invalid product code.");
         }
 
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Fehler: Menge muss grösser als 0 sein.");
+            throw new IllegalArgumentException("Error: The quantity must be greater than 0.");
         }
         Product p = findProduct(code);
         if (p != null) {
             p.setStock(p.getStock() + quantity);
-            System.out.println("Bestand für " + code + " um " + quantity + " erhöht.");
+            System.out.println("Stock for " + code + " increased by " + quantity + ".");
             return true;
         }
         return false;
     }
 
     public boolean replaceProduct(String code, String newName, double newPrice, int newStock) {
-        if (code == null || code.trim().isEmpty()) throw new IllegalArgumentException("Code ungültig");
-        if (newName == null || newName.trim().isEmpty()) throw new IllegalArgumentException("Name ungültig");
-        if (newPrice <= 0) throw new IllegalArgumentException("Preis muss > 0 sein");
-        if (newStock < 0) throw new IllegalArgumentException("Stock darf nicht negativ sein");
+        if (code == null || code.trim().isEmpty()) throw new IllegalArgumentException("Invalid code");
+        if (newName == null || newName.trim().isEmpty()) throw new IllegalArgumentException("Name invalid");
+        if (newPrice <= 0) throw new IllegalArgumentException("The price must be greater than 0");
+        if (newStock < 0) throw new IllegalArgumentException("The stock must not be negative");
 
         Product p = findProduct(code);
         if (p != null) {
@@ -109,7 +109,7 @@ public class VendingMachine {
 
     public boolean changePrice(String code, double newPrice) {
         if (newPrice <= 0) {
-            throw new IllegalArgumentException("Preis muss grösser als 0 sein.");
+            throw new IllegalArgumentException("The price must be greater than 0.");
         }
 
         Product p = findProduct(code);
@@ -126,7 +126,7 @@ public class VendingMachine {
 
     public void setSecretKey(String secretKey) {
         if (secretKey == null || secretKey.trim().length() < 4) {
-            throw new IllegalArgumentException("Secret Key muss mindestens 4 Zeichen lang sein.");
+            throw new IllegalArgumentException("The secret key must be at least 4 characters long.");
         }
         this.secretKey = secretKey;
     }
