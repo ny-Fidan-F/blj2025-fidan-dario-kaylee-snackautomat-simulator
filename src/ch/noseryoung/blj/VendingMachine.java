@@ -112,6 +112,10 @@ public class VendingMachine {
             throw new IllegalArgumentException("The price must be greater than 0.");
         }
 
+        if ((newPrice * 10) % 1 != 0) {
+            throw new IllegalArgumentException("Preis darf nur eine Nachkommastelle haben.");
+        }
+
         Product p = findProduct(code);
         if (p != null) {
             p.setPrice(newPrice);
