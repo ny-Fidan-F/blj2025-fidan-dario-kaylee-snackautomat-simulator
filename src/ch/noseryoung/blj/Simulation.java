@@ -49,14 +49,13 @@ public class Simulation {
         System.out.println("price: " + format(product.getPrice()));
         System.out.println("insert money or type 'cancel':");
 
-        double inserted = 0.0;
-
         while (true) {
             String input = scanner.nextLine().trim().toLowerCase();
 
             if (input.equals("cancel")) {
-                if (inserted > 0) {
-                    System.out.println("returning " + format(inserted));
+                double returnedMoney = machine.cancelProduct();
+                if (returnedMoney > 0) {
+                    System.out.println("returning " + format(returnedMoney));
                 }
                 System.out.println("purchase cancelled.");
                 return;
@@ -69,11 +68,15 @@ public class Simulation {
                 continue;
             }
 
-            inserted = inserted + coin;
+            try {
+                machine.insertMoney(coin);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
 
-            if (inserted >= product.getPrice()) {
-                double change = inserted - product.getPrice();
-                product.setStock(product.getStock() - 1);
+            if (machine.selectProduct(code)) {
+                double change = machine.cancelProduct();
                 System.out.println("enjoy your " + product.getName() + "!");
                 if (change > 0) {
                     System.out.println("your change: " + format(change));
@@ -81,7 +84,7 @@ public class Simulation {
                 return;
 
             } else {
-                double stillNeeded = product.getPrice() - inserted;
+                double stillNeeded = product.getPrice() - machine.getInsertedMoney();
                 System.out.println("you are missing " + format(stillNeeded));
             }
         }
@@ -111,23 +114,17 @@ public class Simulation {
                     break;
                 }
                 System.out.println("How many to add?");
-                String amountInput = scanner.nextLine().trim();
-                double amountAsNumber = readNumber(amountInput);
-                if (amountAsNumber == -1) {
-                    System.out.println("that's not a valid number.");
+                Integer quantity = readInteger(scanner.nextLine().trim());
+                if (quantity == null) {
+                    System.out.println("that's not a valid integer.");
                     break;
                 }
-                amountAsNumber = Math.round(amountAsNumber * 100.0) / 100.0;
-                int toAdd = (int) amountAsNumber;
-                int currentStock = toRestock.getStock();
-                if (currentStock >= 30) {
-                    System.out.println("cannot restock over 30 items. maximum allowed: " + (30 - currentStock));
-                    break;
+                try {
+                    machine.refill(restockCode, quantity);
+                    System.out.println("New stock: " + toRestock.getStock() + "/" + machine.getMaxStockPerProduct());
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
                 }
-                // Only add as many as fit up to 30, silently capping if needed
-                int actuallyAdded = Math.min(toAdd, 30 - currentStock);
-                toRestock.setStock(currentStock + actuallyAdded);
-                System.out.println("Restocked " + actuallyAdded + " items. New stock: " + toRestock.getStock());
                 break;
 
             case "3":
@@ -142,13 +139,22 @@ public class Simulation {
                 String newName = scanner.nextLine().trim();
                 System.out.println("new price:");
                 double newPrice = readNumber(scanner.nextLine().trim());
-                if (newPrice == -1 || !isValidPrice(newPrice)) {
+                if (newPrice == -1) {
                     System.out.println("that's not a valid price.");
                     break;
                 }
-                toReplace.setName(newName);
-                toReplace.setPrice(newPrice);
-                System.out.println("product replaced!");
+                System.out.println("new stock:");
+                Integer replacementStock = readInteger(scanner.nextLine().trim());
+                if (replacementStock == null) {
+                    System.out.println("that's not a valid integer.");
+                    break;
+                }
+                try {
+                    machine.replaceProduct(replaceCode, newName, newPrice, replacementStock);
+                    System.out.println("product replaced!");
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
                 break;
 
             case "4":
@@ -161,12 +167,16 @@ public class Simulation {
                 }
                 System.out.println("new price:");
                 double price = readNumber(scanner.nextLine().trim());
-                if (price == -1 || !isValidPrice(price)) {
+                if (price == -1) {
                     System.out.println("that's not a valid price.");
                     break;
                 }
-                toChange.setPrice(price);
-                System.out.println("price updated!");
+                try {
+                    machine.changePrice(priceCode, price);
+                    System.out.println("price updated!");
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
                 break;
 
             case "5":
@@ -187,12 +197,13 @@ public class Simulation {
         }
     }
 
-
-    private boolean isValidPrice(double price) {
-        double rounded = Math.round(price * 100.0) / 100.0;
-        return price == rounded;
+    private Integer readInteger(String text) {
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
-
 
     private String format(double number) {
         return String.format("%.2f", number);

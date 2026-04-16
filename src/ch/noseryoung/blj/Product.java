@@ -1,6 +1,8 @@
 package ch.noseryoung.blj;
 
 public class Product {
+    private static final double PRICE_SCALE = 100.0;
+
     private final String code;
     private String name;
     private double price;
@@ -40,6 +42,11 @@ public class Product {
     public void setPrice(double price) {
         if (price <= 0) {
             throw new IllegalArgumentException("Price must be greater than 0.");
+        }
+
+        double rounded = Math.round(price * PRICE_SCALE) / PRICE_SCALE;
+        if (Double.compare(price, rounded) != 0) {
+            throw new IllegalArgumentException("Price must have at most 2 decimal places.");
         }
 
         this.price = price;

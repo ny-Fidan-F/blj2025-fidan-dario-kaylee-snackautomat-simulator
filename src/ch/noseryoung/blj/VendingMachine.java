@@ -4,6 +4,9 @@ package ch.noseryoung.blj;
 import java.util.*;
 
 public class VendingMachine {
+    private static final int MAX_STOCK_PER_PRODUCT = 30;
+    private static final double MONEY_SCALE = 100.0;
+
 
     private String secretKey;
     private double insertedMoney;
@@ -20,6 +23,11 @@ public class VendingMachine {
     public void insertMoney(double amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("The amount entered must be greater than 0.");
+        }
+
+        double roundedAmount = Math.round(amount * MONEY_SCALE) / MONEY_SCALE;
+        if (Double.compare(amount, roundedAmount) != 0) {
+            throw new IllegalArgumentException("The amount must have at most 2 decimal places.");
         }
         this.insertedMoney += amount;
     }
@@ -84,6 +92,11 @@ public class VendingMachine {
         }
         Product p = findProduct(code);
         if (p != null) {
+            if (p.getStock() + quantity > MAX_STOCK_PER_PRODUCT) {
+                throw new IllegalArgumentException(
+                        "Error: Only " + (MAX_STOCK_PER_PRODUCT - p.getStock()) + " items fit into slot " + code + "."
+                );
+            }
             p.setStock(p.getStock() + quantity);
             System.out.println("Stock for " + code + " increased by " + quantity + ".");
             return true;
@@ -96,6 +109,9 @@ public class VendingMachine {
         if (newName == null || newName.trim().isEmpty()) throw new IllegalArgumentException("Name invalid");
         if (newPrice <= 0) throw new IllegalArgumentException("The price must be greater than 0");
         if (newStock < 0) throw new IllegalArgumentException("The stock must not be negative");
+        if (newStock > MAX_STOCK_PER_PRODUCT) {
+            throw new IllegalArgumentException("The stock must not exceed " + MAX_STOCK_PER_PRODUCT + ".");
+        }
 
         Product p = findProduct(code);
         if (p != null) {
@@ -110,10 +126,6 @@ public class VendingMachine {
     public boolean changePrice(String code, double newPrice) {
         if (newPrice <= 0) {
             throw new IllegalArgumentException("The price must be greater than 0.");
-        }
-
-        if ((newPrice * 10) % 1 != 0) {
-            throw new IllegalArgumentException("Preis darf nur eine Nachkommastelle haben.");
         }
 
         Product p = findProduct(code);
@@ -133,6 +145,13 @@ public class VendingMachine {
             throw new IllegalArgumentException("The secret key must be at least 4 characters long.");
         }
         this.secretKey = secretKey;
+    }
+
+    public int getMaxStockPerProduct() {
+        return MAX_STOCK_PER_PRODUCT;
+    }
+    public double getInsertedMoney() {
+        return insertedMoney;
     }
 
 }
