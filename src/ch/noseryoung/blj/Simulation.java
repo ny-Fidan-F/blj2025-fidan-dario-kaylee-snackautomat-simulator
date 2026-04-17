@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class Simulation {
 
-    private VendingMachine machine;
-    private Scanner scanner;
+    private final VendingMachine machine;
+    private final Scanner scanner;
 
     public Simulation() {
         this.scanner = new Scanner(System.in);
@@ -16,16 +16,24 @@ public class Simulation {
         System.out.println("hi welcome to the Snack Machine!");
 
         while (true) {
-            System.out.println("\nenter a product code, the secret key, or type exit:");
+            System.out.println("\nenter a product code to purchase");
+            System.out.println("or the secret key");
+            System.out.println("type 'menu' to see the vending machine selection");
+            System.out.println("or type 'exit' to exit");
             String input = scanner.nextLine().toLowerCase();
 
             if (input.equals("exit")) {
-                System.out.println("byebye");
+                System.out.println("bye bye");
                 break;
 
             } else if (input.equals(machine.getSecretKey().toLowerCase())) {
                 handleMaintenance();
 
+            } else if (input.equals("menu")) {
+                System.out.println("\n--- Vending Machine Menu ---");
+                for (Product p : machine.getAllProducts()) {
+                    System.out.println(p.getCode() + " - " + p.getName() + " - " + p.getPrice() + " - Stock: " + p.getStock());
+                }
             } else {
                 handlePurchase(input);
             }
@@ -49,6 +57,16 @@ public class Simulation {
         System.out.println("price: " + format(product.getPrice()));
         System.out.println("insert money or type 'cancel':");
 
+        if (collectPayment(code, product)) {
+            double change = machine.cancelProduct();
+            System.out.println("enjoy your " + product.getName() + "!");
+            if (change > 0) {
+                System.out.println("your change: " + format(change));
+            }
+        }
+    }
+
+    private boolean collectPayment(String code, Product product) {
         while (true) {
             String input = scanner.nextLine().trim().toLowerCase();
 
@@ -58,7 +76,7 @@ public class Simulation {
                     System.out.println("returning " + format(returnedMoney));
                 }
                 System.out.println("purchase cancelled.");
-                return;
+                return false;
             }
 
             double coin = readNumber(input);
@@ -75,14 +93,8 @@ public class Simulation {
                 continue;
             }
 
-            if (machine.selectProduct(code)) {
-                double change = machine.cancelProduct();
-                System.out.println("enjoy your " + product.getName() + "!");
-                if (change > 0) {
-                    System.out.println("your change: " + format(change));
-                }
-                return;
-
+            if (machine.selectProduct(code) != null) {
+                return true;
             } else {
                 double stillNeeded = product.getPrice() - machine.getInsertedMoney();
                 System.out.println("you are missing " + format(stillNeeded));
@@ -115,7 +127,7 @@ public class Simulation {
                 }
                 System.out.println("How many to add?");
                 Integer quantity = readInteger(scanner.nextLine().trim());
-                if (quantity == null) {
+                if (quantity == null || quantity <= 0) {
                     System.out.println("that's not a valid integer.");
                     break;
                 }
@@ -139,14 +151,11 @@ public class Simulation {
                 String newName = scanner.nextLine().trim();
                 System.out.println("new price:");
                 double newPrice = readNumber(scanner.nextLine().trim());
-                if (newPrice == -1) {
-                    System.out.println("that's not a valid price.");
-                    break;
-                }
                 System.out.println("new stock:");
                 Integer replacementStock = readInteger(scanner.nextLine().trim());
-                if (replacementStock == null) {
-                    System.out.println("that's not a valid integer.");
+
+                if (newPrice == -1 || replacementStock == null) {
+                    System.out.println("invalid input.");
                     break;
                 }
                 try {
@@ -168,7 +177,7 @@ public class Simulation {
                 System.out.println("new price:");
                 double price = readNumber(scanner.nextLine().trim());
                 if (price == -1) {
-                    System.out.println("that's not a valid price.");
+                    System.out.println("invalid input.");
                     break;
                 }
                 try {

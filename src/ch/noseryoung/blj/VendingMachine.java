@@ -32,20 +32,24 @@ public class VendingMachine {
         this.insertedMoney += amount;
     }
 
-    public boolean selectProduct(String code) {
+    public Product findProduct(String code) {
         for (Product p : products) {
             if (p.getCode().equalsIgnoreCase(code)) {
-                if (this.insertedMoney >= p.getPrice() && p.getStock() > 0) {
-                    this.insertedMoney -= p.getPrice();
-                    p.setStock(p.getStock() - 1);
-
-                    return true;
-                } else {
-                    return false;
-                }
+                return p;
             }
         }
-        return false;
+        return null;
+    }
+
+
+    public Product selectProduct(String code) {
+        Product p = findProduct(code);
+        if (p != null && this.insertedMoney >= p.getPrice() && p.getStock() > 0) {
+            this.insertedMoney -= p.getPrice();
+            p.setStock(p.getStock() - 1);
+            return p;
+        }
+        return null;
     }
 
     public double cancelProduct() {
@@ -73,14 +77,6 @@ public class VendingMachine {
         }
     }
 
-    public Product findProduct(String code) {
-        for (Product p : products) {
-            if (p.getCode().equalsIgnoreCase(code)) {
-                return p;
-            }
-        }
-        return null;
-    }
 
     public boolean refill(String code, int quantity) {
         if (code == null || code.trim().isEmpty()) {
@@ -145,6 +141,10 @@ public class VendingMachine {
             throw new IllegalArgumentException("The secret key must be at least 4 characters long.");
         }
         this.secretKey = secretKey;
+    }
+
+    public List<Product> getAllProducts() {
+        return products;
     }
 
     public int getMaxStockPerProduct() {
